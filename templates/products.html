@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %}Products{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-left">
+    <h1 class="page-title">Product Analytics</h1>
+    <p class="page-subtitle">Top sellers · category breakdown · revenue comparison</p>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ── Filters ────────────────────────────────────────── -->
+  <form class="filter-bar" id="filter-form" role="search" aria-label="Product report filters">
+    <div class="filter-group">
+      <label class="filter-label" for="start-date">From</label>
+      <input type="date" class="filter-input" id="start-date" name="start_date">
+    </div>
+    <div class="filter-group">
+      <label class="filter-label" for="end-date">To</label>
+      <input type="date" class="filter-input" id="end-date" name="end_date">
+    </div>
+    <div class="filter-group">
+      <label class="filter-label" for="category-filter">Category</label>
+      <select class="filter-select" id="category-filter" name="category">
+        <option value="">All Categories</option>
+        {% for c in categories %}
+        <option value="{{ c }}">{{ c }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">⚡ Apply</button>
+    <button type="button" class="btn btn-ghost" id="reset-btn">↺ Reset</button>
+  </form>
+
+  <div id="error-banner" class="alert alert-error" style="display:none" role="alert"></div>
+
+  <!-- ── Charts Row ─────────────────────────────────────── -->
+  <div class="chart-row chart-row-eq">
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">Top 10 Products by Revenue</div>
+        <div class="chart-sub">Horizontal bar · completed orders</div>
+      </div>
+      <div class="chart-wrap" style="height:280px">
+        <canvas id="top-products-chart" aria-label="Top products bar chart" role="img"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">Revenue by Category</div>
+        <div class="chart-sub">Donut · share of completed revenue</div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="category-chart" aria-label="Category donut chart" role="img"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Top Products Table ─────────────────────────────── -->
+  <div class="table-card" style="position:relative">
+    <div class="table-card-header">
+      <div class="table-card-title">📦 Product Comparison Table</div>
+    </div>
+    <div class="loading-overlay" id="loading-overlay"><div class="spinner-ring"></div></div>
+    <div class="data-table-wrap">
+      <table class="data-table" id="products-table" aria-label="Products data">
+        <thead>
+          <tr>
+            <th class="text-center">Rank</th>
+            <th>Product</th>
+            <th>Category</th>
+            <th class="text-right">Units Sold</th>
+            <th class="text-right">Revenue</th>
+            <th class="text-right">Avg Unit Price</th>
+          </tr>
+        </thead>
+        <tbody id="products-tbody">
+          <tr><td colspan="6"><div class="empty-state"><div class="spinner-ring" style="margin:0 auto"></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Category Summary Table ─────────────────────────── -->
+  <div class="table-card">
+    <div class="table-card-header">
+      <div class="table-card-title">📊 Category Summary</div>
+    </div>
+    <div class="data-table-wrap">
+      <table class="data-table" id="category-table" aria-label="Category summary">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th class="text-right">Revenue</th>
+            <th class="text-right">Units Sold</th>
+            <th class="text-right">Orders</th>
+            <th class="text-right">% of Total</th>
+          </tr>
+        </thead>
+        <tbody id="category-tbody">
+          <tr><td colspan="5"><div class="empty-state"><div class="spinner-ring" style="margin:0 auto"></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => initProductsReport());
+</script>
+{% endblock %}

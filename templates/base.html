@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}InsightBoard{% endblock %} — Business Analytics</title>
+  <meta name="description" content="InsightBoard: SQL-powered business reporting and analytics dashboard for managers and analysts.">
+  <meta name="theme-color" content="#070b14">
+
+  <!-- Preconnect for fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- App CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js" defer></script>
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- ── Sidebar ─────────────────────────────────────────── -->
+  <nav class="sidebar" id="sidebar" aria-label="Main navigation">
+
+    <div class="sidebar-logo">
+      <div class="logo-icon" aria-hidden="true">📊</div>
+      <div>
+        <div class="logo-text">InsightBoard</div>
+        <div class="logo-sub">Analytics Platform</div>
+      </div>
+    </div>
+
+    <div class="sidebar-nav">
+      <div class="nav-group-label">Overview</div>
+      <a href="{{ url_for('main.dashboard') }}"
+         class="nav-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}"
+         id="nav-dashboard">
+        <span class="nav-icon" aria-hidden="true">🏠</span> Dashboard
+      </a>
+
+      <div class="nav-group-label">Reports</div>
+      <a href="{{ url_for('main.sales_report') }}"
+         class="nav-link {% if request.endpoint == 'main.sales_report' %}active{% endif %}"
+         id="nav-sales">
+        <span class="nav-icon" aria-hidden="true">📋</span> Sales Report
+      </a>
+      <a href="{{ url_for('main.products_report') }}"
+         class="nav-link {% if request.endpoint == 'main.products_report' %}active{% endif %}"
+         id="nav-products">
+        <span class="nav-icon" aria-hidden="true">📦</span> Products
+      </a>
+      <a href="{{ url_for('main.customers_report') }}"
+         class="nav-link {% if request.endpoint == 'main.customers_report' %}active{% endif %}"
+         id="nav-customers">
+        <span class="nav-icon" aria-hidden="true">👥</span> Customers
+      </a>
+
+      <div class="nav-group-label">Export</div>
+      <a href="{{ url_for('main.export_csv') }}"
+         class="nav-link"
+         id="nav-export"
+         title="Download full sales CSV">
+        <span class="nav-icon" aria-hidden="true">📥</span> Export CSV
+      </a>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-footer-text">InsightBoard v1.0</div>
+      <div class="sidebar-footer-sub">Portfolio Project — TI Bengaluru</div>
+    </div>
+  </nav>
+
+  <!-- ── Main content ────────────────────────────────────── -->
+  <main class="main-content" id="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+</div><!-- /.app-layout -->
+
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

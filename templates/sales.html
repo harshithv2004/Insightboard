@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %}Sales Report{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-left">
+    <h1 class="page-title">Sales Report</h1>
+    <p class="page-subtitle">Order-level detail · filter · sort · export</p>
+  </div>
+  <a id="export-link" href="{{ url_for('main.export_csv') }}" class="btn btn-export" id="csv-export-btn">
+    📥 Export CSV
+  </a>
+</div>
+
+<div class="content">
+
+  <!-- ── Filters ────────────────────────────────────────── -->
+  <form class="filter-bar" id="filter-form" role="search" aria-label="Sales report filters">
+    <div class="filter-group">
+      <label class="filter-label" for="start-date">From</label>
+      <input type="date" class="filter-input" id="start-date" name="start_date">
+    </div>
+    <div class="filter-group">
+      <label class="filter-label" for="end-date">To</label>
+      <input type="date" class="filter-input" id="end-date" name="end_date">
+    </div>
+    <div class="filter-group">
+      <label class="filter-label" for="region-filter">Region</label>
+      <select class="filter-select" id="region-filter" name="region">
+        <option value="">All Regions</option>
+        {% for r in regions %}
+        <option value="{{ r }}">{{ r }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="filter-group">
+      <label class="filter-label" for="category-filter">Category</label>
+      <select class="filter-select" id="category-filter" name="category">
+        <option value="">All Categories</option>
+        {% for c in categories %}
+        <option value="{{ c }}">{{ c }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="filter-group">
+      <label class="filter-label" for="status-filter">Status</label>
+      <select class="filter-select" id="status-filter" name="status">
+        <option value="">All Statuses</option>
+        <option value="Completed">Completed</option>
+        <option value="Pending">Pending</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">⚡ Apply</button>
+    <button type="button" class="btn btn-ghost" id="reset-btn">↺ Reset</button>
+  </form>
+
+  <!-- ── Error alert ─────────────────────────────────────── -->
+  <div id="error-banner" class="alert alert-error" style="display:none" role="alert"></div>
+
+  <!-- ── Table ──────────────────────────────────────────── -->
+  <div class="table-card" style="position:relative">
+    <div class="table-card-header">
+      <div class="table-card-title" id="result-count">Loading…</div>
+      <div class="table-card-actions">
+        <select class="filter-select btn-sm" id="per-page-select" aria-label="Rows per page" style="min-width:100px">
+          <option value="25">25 rows</option>
+          <option value="50">50 rows</option>
+          <option value="100">100 rows</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+      <div class="spinner-ring"></div>
+    </div>
+
+    <div class="data-table-wrap" id="table-body-wrap">
+      <table class="data-table" id="sales-table" aria-label="Sales data">
+        <thead>
+          <tr>
+            <th class="sortable" data-col="order_date" id="th-order_date">Date</th>
+            <th>Order ID</th>
+            <th class="sortable" data-col="customer" id="th-customer">Customer</th>
+            <th class="sortable" data-col="region" id="th-region">Region</th>
+            <th class="sortable" data-col="status" id="th-status">Status</th>
+            <th class="sortable" data-col="product" id="th-product">Product</th>
+            <th>Category</th>
+            <th class="sortable text-right" data-col="quantity" id="th-quantity">Qty</th>
+            <th class="text-right">Unit Price</th>
+            <th class="sortable text-right" data-col="line_total" id="th-line_total">Line Total</th>
+          </tr>
+        </thead>
+        <tbody id="sales-tbody">
+          <tr><td colspan="10" class="empty-state"><div class="spinner-ring" style="margin:0 auto"></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-bar" id="pagination-bar">
+      <div class="pagination-info" id="pagination-info">—</div>
+      <div class="pagination-controls" id="pagination-controls"></div>
+    </div>
+  </div>
+
+</div><!-- /.content -->
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+<script>
+  // Initialize the sales report page
+  document.addEventListener('DOMContentLoaded', () => initSalesReport());
+</script>
+{% endblock %}

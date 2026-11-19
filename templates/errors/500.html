@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}500 — Server Error{% endblock %}
+
+{% block content %}
+<div class="error-page">
+  <div class="error-code">500</div>
+  <h1 class="error-title">Internal Server Error</h1>
+  <p class="error-message">
+    Something went wrong on our end. The error has been logged.
+    Please check your database connection and try again.
+  </p>
+  <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">← Back to Dashboard</a>
+</div>
+{% endblock %}

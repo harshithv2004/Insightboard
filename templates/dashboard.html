@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-left">
+    <h1 class="page-title">Executive Dashboard</h1>
+    <p class="page-subtitle">Completed orders · Real-time business metrics</p>
+  </div>
+  <div id="last-updated" style="font-size:12px;color:var(--text-muted)"></div>
+</div>
+
+<div class="content">
+
+  <!-- ── Filter bar ─────────────────────────────────────── -->
+  <form class="filter-bar" id="filter-form" role="search" aria-label="Dashboard filters">
+    <div class="filter-group">
+      <label class="filter-label" for="start-date">From</label>
+      <input type="date" class="filter-input" id="start-date" name="start_date"
+             aria-label="Start date">
+    </div>
+    <div class="filter-group">
+      <label class="filter-label" for="end-date">To</label>
+      <input type="date" class="filter-input" id="end-date" name="end_date"
+             aria-label="End date">
+    </div>
+    <div class="filter-group">
+      <label class="filter-label" for="region-filter">Region</label>
+      <select class="filter-select" id="region-filter" name="region" aria-label="Filter by region">
+        <option value="">All Regions</option>
+        <option value="North">North</option>
+        <option value="South">South</option>
+        <option value="East">East</option>
+        <option value="West">West</option>
+        <option value="Central">Central</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary" id="apply-btn">⚡ Apply</button>
+    <button type="button" class="btn btn-ghost" id="reset-btn">↺ Reset</button>
+  </form>
+
+  <!-- ── Error alert ────────────────────────────────────── -->
+  <div id="error-banner" class="alert alert-error" style="display:none" role="alert"></div>
+
+  <!-- ── KPI Cards ──────────────────────────────────────── -->
+  <div class="kpi-grid" id="kpi-grid">
+    <div class="kpi-card kpi-revenue">
+      <div class="kpi-icon-bg" aria-hidden="true">💰</div>
+      <div class="kpi-label">Total Revenue</div>
+      <div class="kpi-value mono" id="kpi-revenue">—</div>
+      <div class="kpi-sub" id="kpi-aov">Avg order: —</div>
+    </div>
+    <div class="kpi-card kpi-orders">
+      <div class="kpi-icon-bg" aria-hidden="true">📋</div>
+      <div class="kpi-label">Completed Orders</div>
+      <div class="kpi-value mono" id="kpi-orders">—</div>
+      <div class="kpi-sub">Completed status</div>
+    </div>
+    <div class="kpi-card kpi-customers">
+      <div class="kpi-icon-bg" aria-hidden="true">👥</div>
+      <div class="kpi-label">Unique Customers</div>
+      <div class="kpi-value mono" id="kpi-customers">—</div>
+      <div class="kpi-sub">With completed orders</div>
+    </div>
+    <div class="kpi-card kpi-units">
+      <div class="kpi-icon-bg" aria-hidden="true">📦</div>
+      <div class="kpi-label">Units Sold</div>
+      <div class="kpi-value mono" id="kpi-units">—</div>
+      <div class="kpi-sub">Items in completed orders</div>
+    </div>
+  </div>
+
+  <!-- ── Charts Row 1: Monthly trend + Regional bar ─────── -->
+  <div class="chart-row chart-row-2">
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">Monthly Revenue Trend</div>
+        <div class="chart-sub">Revenue from completed orders</div>
+      </div>
+      <div class="chart-wrap"><canvas id="monthly-chart" aria-label="Monthly revenue chart" role="img"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">Revenue by Region</div>
+        <div class="chart-sub">All regions · completed orders</div>
+      </div>
+      <div class="chart-wrap"><canvas id="regional-chart" aria-label="Regional revenue chart" role="img"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ── Charts Row 2: Top Products bar + Category donut ── -->
+  <div class="chart-row chart-row-eq">
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">Top 5 Products by Revenue</div>
+        <div class="chart-sub">Completed orders only</div>
+      </div>
+      <div class="chart-wrap"><canvas id="top-products-chart" aria-label="Top products chart" role="img"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">Revenue by Category</div>
+        <div class="chart-sub">Category share of completed revenue</div>
+      </div>
+      <div class="chart-wrap"><canvas id="category-chart" aria-label="Category revenue chart" role="img"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ── Top 10 Products Table ──────────────────────────── -->
+  <div class="table-card">
+    <div class="table-card-header">
+      <div class="table-card-title">🏆 Top 10 Products</div>
+      <a href="{{ url_for('main.products_report') }}" class="btn btn-ghost btn-sm">View All →</a>
+    </div>
+    <div id="top-products-table-wrap">
+      <div class="empty-state">
+        <div class="spinner-ring" style="margin:0 auto"></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /.content -->
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}
